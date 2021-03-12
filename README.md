@@ -2,14 +2,15 @@
 
 Render all cameras, one by one, and store the results. <br />
 
-Authors: Aidy Burrows, Gleb Alexandrov, Roman Alexandrov (Updated to be used with newer Blender versions by biteworks)<br />
+Authors: Aidy Burrows, Gleb Alexandrov, Roman Alexandrov<br />
+(Updated to be used with newer Blender versions by biteworks)<br />
 
 ![Imgur](https://i.imgur.com/VoyEm7D.jpg)
 
 
 ## How to Install the Add-on, step-by-step
 
-1. Download **[the archive with RenderBurst and Project Files](https://github.com/biteworks/RenderBurst/archive/master.zip)**
+1. Download **[the RenderBurst repo](https://github.com/biteworks/RenderBurst/archive/master.zip)**
 
 2. Launch Blender! :) Go Edit > User Preferences > Add-ons
 
@@ -17,7 +18,7 @@ Authors: Aidy Burrows, Gleb Alexandrov, Roman Alexandrov (Updated to be used wit
 
 ![Imgur](https://i.imgur.com/lzxrXq6.png)
 
-5. Navigate to the folder with the **RenderBurst.py** file, select it and click Install Add-on from File.<br />
+5. Navigate to the ZIP-File **RenderBurst-master.zip** file, select it and click Install Add-on from File.<br />
 
 You should now see a new tab in the right toolshelf, called Render Burst. 
 
