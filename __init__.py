@@ -158,11 +158,18 @@ class RenderBurstCamerasPanel(bpy.types.Panel):
 
     def draw(self, context):
         wm = context.window_manager
+        rd = context.scene.render
+        
+        row = self.layout.row()
+        row.label(text="Render mode", icon="RESTRICT_RENDER_OFF")
         row = self.layout.row()
         row.prop(wm.rb_filter, "rb_filter_enum", expand=True)
         row = self.layout.row()
-        row.operator("rb.renderbutton", text='Render!')
+        row.label(text="Output path", icon="FILEBROWSER")
         row = self.layout.row()
+        row.prop(rd, "filepath", text="")
+        row = self.layout.row()
+        row.operator("rb.renderbutton", text="Render!")
 
 def menu_func(self, context):
     self.layout.operator(RenderBurst.bl_idname)
