@@ -18,6 +18,27 @@ def ShowMessageBox(message = "", title = "Message Box", icon = 'INFO'):
 
     bpy.context.window_manager.popup_menu(draw, title = title, icon = icon)
 
+# ------------------------------------------------------------------------
+#    Operators
+# ------------------------------------------------------------------------
+
+class OBJECT_OT_RBButton(bpy.types.Operator):
+    bl_idname = "rb.renderbutton"
+    bl_label = "Render"
+
+    def execute(self, context):
+        if bpy.context.scene.render.filepath is None or len(bpy.context.scene.render.filepath)<1:
+            self.report({"ERROR"}, 'Output path not defined. Please, define the output path on the render settings panel')
+            return {"FINISHED"}
+
+        animation_formats = [ 'FFMPEG', 'AVI_JPEG', 'AVI_RAW', 'FRAMESERVER' ]
+
+        if bpy.context.scene.render.image_settings.file_format in animation_formats:
+            self.report({"ERROR"}, 'Animation formats are not supported. Yet :)')
+            return {"FINISHED"}
+
+        bpy.ops.render.renderburst()
+        return{'FINISHED'}
 
 class RenderBurst(bpy.types.Operator):
     """Render all cameras"""
@@ -108,7 +129,10 @@ class RenderBurst(bpy.types.Operator):
 
         return {"PASS_THROUGH"}
 
-# ui part
+# ------------------------------------------------------------------------
+#    Scene Properties
+# ------------------------------------------------------------------------
+
 class RbFilterSettings(bpy.types.PropertyGroup):
     rb_filter_enum = bpy.props.EnumProperty(
         name = "Filter",
@@ -120,6 +144,9 @@ class RbFilterSettings(bpy.types.PropertyGroup):
         default = 'all'
     )   
 
+# ------------------------------------------------------------------------
+#    Panel and UI
+# ------------------------------------------------------------------------
 
 class RenderBurstCamerasPanel(bpy.types.Panel):
     """Creates a Panel in the scene context of the properties editor"""
@@ -137,47 +164,32 @@ class RenderBurstCamerasPanel(bpy.types.Panel):
         row.operator("rb.renderbutton", text='Render!')
         row = self.layout.row()
 
-class OBJECT_OT_RBButton(bpy.types.Operator):
-    bl_idname = "rb.renderbutton"
-    bl_label = "Render"
-
-    #@classmethod
-    #def poll(cls, context):
-    #    return True
- 
-    def execute(self, context):
-        if bpy.context.scene.render.filepath is None or len(bpy.context.scene.render.filepath)<1:
-            self.report({"ERROR"}, 'Output path not defined. Please, define the output path on the render settings panel')
-            return {"FINISHED"}
-
-        animation_formats = [ 'FFMPEG', 'AVI_JPEG', 'AVI_RAW', 'FRAMESERVER' ]
-
-        if bpy.context.scene.render.image_settings.file_format in animation_formats:
-            self.report({"ERROR"}, 'Animation formats are not supported. Yet :)')
-            return {"FINISHED"}
-
-        bpy.ops.render.renderburst()
-        return{'FINISHED'}
-
 def menu_func(self, context):
     self.layout.operator(RenderBurst.bl_idname)
 
+# ------------------------------------------------------------------------
+#    Registration
+# ------------------------------------------------------------------------
+
+classes = (
+    RenderBurst,
+    RbFilterSettings,
+    RenderBurstCamerasPanel,
+    OBJECT_OT_RBButton
+)
+
 def register():
     from bpy.utils import register_class
-    register_class(RenderBurst)
-    register_class(RbFilterSettings)
-    register_class(RenderBurstCamerasPanel)
-    register_class(OBJECT_OT_RBButton)
+    for cls in classes:
+        register_class(cls)
     bpy.types.WindowManager.rb_filter = bpy.props.PointerProperty(type=RbFilterSettings)
     bpy.types.TOPBAR_MT_render.append(menu_func)
 
 def unregister():
     from bpy.utils import unregister_class
-    unregister_class(RenderBurst)
+    for cls in reversed(classes):
+        unregister_class(cls)
     bpy.types.TOPBAR_MT_render.remove(menu_func)
-    unregister_class(RbFilterSettings)
-    unregister_class(RenderBurstCamerasPanel)
-    unregister_class(OBJECT_OT_RBButton)
 
 if __name__ == "__main__":
     register()
